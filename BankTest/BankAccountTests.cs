@@ -7,6 +7,10 @@ namespace BankTest
     [TestClass]
     public class BankAccountTests
     {
+        // class under test
+        public const string DebitAmountExceedsBalanceMessage = "Debit amount exceeds balance";
+        public const string DebitAmountLessThanZeroMessage = "Debit amount less than zero";
+
         [TestMethod]
         public void TestMethod1()
         {
@@ -59,6 +63,28 @@ namespace BankTest
             account.Debit(debitAmount);
 
             //assert is handled by ExpectedException
+        }
+
+        [TestMethod]
+        public void Debit_WhenAmountIsGreaterThanBalance_ShouldThrowArgumentOutOfRange()
+        {
+            //arrange
+            double beginningBalance = 11.99;
+            double debitAmount = 20.0;
+            BankAccount account = new BankAccount("Mr. Bryan Walton", beginningBalance);
+
+            //act
+            try
+            {
+                account.Debit(debitAmount);
+            }
+            catch (ArgumentOutOfRangeException e)
+            {
+                // assert
+                StringAssert.Contains(e.Message, BankAccount.DebitAmountExceedsBalanceMessage);
+                return;
+            }
+            Assert.Fail("No exception was thrown.");
         }
     }
 }
